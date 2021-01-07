@@ -3,19 +3,17 @@
 -- data ArbitraryTree a = Nil | ArbitraryNode a [ (ArbitraryTree a) ]
 data BinaryTree a = Nil | BinaryNode a (BinaryTree a) (BinaryTree a) deriving (Eq, Ord, Show, Read)
 
--- Example construction
--- Empty Tree
--- Nil
+instance Functor BinaryTree where
+  fmap f Nil = Nil
+  fmap f (BinaryNode d l r) = BinaryNode (f d) (fmap f l) (fmap f r)
 
--- -- Root Node with empty children
--- Node "first" []
+instance Foldable BinaryTree where
+  foldMap f Nil = mempty
+  foldMap f (BinaryNode d l r) = foldMap f l `mappend` f d `mappend` foldMap f r 
 
--- -- Root Node with children
--- Node "root" [Node "left" [], Node "right" []]
-
-sumTree :: Num a => BinaryTree a -> a
-sumTree Nil = 0
-sumTree (BinaryNode x left right) = x + sumTree left + sumTree right
+instance Traversable BinaryTree where
+  traverse f Nil = pure Nil
+  traverse f (BinaryNode d l r) = BinaryNode <$> f d <*> traverse f l <*> traverse f r 
 
 inOrder :: BinaryTree a -> [a]
 inOrder Nil = []
