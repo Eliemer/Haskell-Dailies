@@ -95,7 +95,40 @@ repli n (x:xs) = [x | _<-[1..n]] ++ repli n xs
 -- Problem 16
 -- the stupid way
 dropEvery :: Int -> [a] -> [a]
-dropEvery n xs = go 0 xs
-  where go m ys
-    |
-    |
+dropEvery n xs = go 1 xs
+  where go _ [] = []
+        go m (y:ys)
+          | m `mod` n == 0  = go 1 ys
+          | otherwise       = y : go (m+1) ys
+
+-- Problem 17
+split :: Int -> [a] -> ([a], [a])
+split n xs = (take n xs, drop n xs)
+
+split' :: Int -> [a] -> ([a], [a])
+split' _ []       = ([], [])
+split' n l@(x:xs)
+    | n > 0       = (x : ys, zs)
+    | otherwise   = ([], l)
+    where (ys,zs) = split (n - 1) xs 
+
+-- Problem 18
+slice :: Int -> Int -> [a] -> [a]
+slice s e xs = drop (s-1) $ take e xs
+
+-- Problem 19
+rotate :: Int -> [a] -> [a]
+rotate _ [] = []
+rotate n l@(x:xs)
+  | n > 0       = rotate (n-1) $ xs ++ [x]
+  | n < 0       = rotate (n+1) $ (last l : init l)
+  | otherwise   = l
+
+-- Problem 20
+removeAt :: Int -> [a] -> (a, [a])
+removeAt _ [] = error ""
+removeAt n xs = if n > 1 then go n [] xs else error ""
+  where go m ys [] = error ""
+        go m ys (z:zs)
+              | m > 1     = go (m-1) (ys ++ [z]) zs 
+              | otherwise = (z, ys ++ zs)
