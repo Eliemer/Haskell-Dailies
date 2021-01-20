@@ -132,3 +132,14 @@ removeAt n xs = if n > 1 then go n [] xs else error ""
         go m ys (z:zs)
               | m > 1     = go (m-1) (ys ++ [z]) zs 
               | otherwise = (z, ys ++ zs)
+
+-- Problem 21
+-- insertAt :: Int -> a -> [a] -> [a]
+-- insertAt n d l@(x:xs)
+--   | n > length l    = error "index too large"
+--   | otherwise
+--   where go m 
+--               | n > 1           =
+--               | n == 0          = 
+--               | otherwise       =
+--               where
