@@ -1,3 +1,6 @@
+import qualified System.Random as Rand
+import Data.List (nub, minimum)
+
 -- Problem 1
 myLast :: [a] -> a
 myLast [x]  = x
@@ -133,13 +136,35 @@ removeAt n xs = if n > 1 then go n [] xs else error ""
               | m > 1     = go (m-1) (ys ++ [z]) zs 
               | otherwise = (z, ys ++ zs)
 
+removeAt' :: Int -> [a] -> (a, [a])
+removeAt' _ [] = error "Index too large"
+removeAt' n l@(x:xs)
+  | length l <= n  = error "Index too large"
+  | n == 1         = (x, xs)
+  | otherwise      = let (y, ys) = removeAt' (n-1) xs in (y, x:ys)
+
 -- Problem 21
--- insertAt :: Int -> a -> [a] -> [a]
--- insertAt n d l@(x:xs)
---   | n > length l    = error "index too large"
---   | otherwise
---   where go m 
---               | n > 1           =
---               | n == 0          = 
---               | otherwise       =
---               where
+insertAt :: Int -> a -> [a] -> [a]
+insertAt _ x [] = [x]
+insertAt n x l@(y:ys)
+  | length l < n  = error "Index too large"
+  | n == 0        = x : l
+  | otherwise     = y : insertAt (n-1) x ys
+
+-- Problem 22
+range :: Integer -> Integer -> [Integer]
+range n m = [n..m]
+
+-- Problem 23
+rndSelect :: Int -> [a] -> IO [a]
+rndSelect n xs
+  | n < 0     = error "N must be greater than zero"
+  | otherwise = do
+      gen <- Rand.getStdGen
+      return $ take n [ xs !! x | x <- Rand.randomRs(0, (length xs) - 1) gen]
+
+-- Problem 24
+rndSample :: Int -> Int -> IO [Int]
+rndSample n to 
+  | to < n    = error "N must be smaller than range"
+  | otherwise = take n . nub . Rand.randomRs (1, to) <$> Rand.getStdGen
